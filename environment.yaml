@@ -7,14 +7,16 @@ dependencies:
   - torchvision
   - cudatoolkit=11.0.3
   - pillow
+  - numpy=1.23.5
+  - setuptools=65.5.0
+  - wheel<0.40.0
+  - pandas
   - pip
   - pip:
     - termcolor
     - omegaconf
     - gym==0.21.0
     - dm-control==0.0.403778684
-    - pandas
     - wandb
     - moviepy
     - imageio
-    - numpy==1.23.5
