@@ -42,7 +42,7 @@ def evaluate(env, agent, num_episodes, step, env_step, video):
 			action = agent.plan(obs, eval_mode=True, step=step, t0=t==0)
 			obs, reward, done, _ = env.step(action.cpu().numpy())
 			ep_reward += reward
-			save_picture(env, env_step, step)
+			# save_picture(env, env_step, step)
 			if video: video.record(env, step=env_step)
 			t += 1
 		episode_rewards.append(ep_reward)
