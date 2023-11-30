@@ -21,9 +21,6 @@ import logger
 torch.backends.cudnn.benchmark = True
 __CONFIG__, __LOGS__ = 'cfgs', 'logs'
 
-def save_picture(env, env_step, step):
-	frame = env.render(mode='rgb_array', height=384, width=384, camera_id=0)
-	Image.fromarray(frame).save(f"media/{env_step}_{step}.png", format='png')
 
 def set_seed(seed):
 	random.seed(seed)
@@ -42,8 +39,7 @@ def evaluate(env, agent, num_episodes, step, env_step, video):
 			action = agent.plan(obs, eval_mode=True, step=step, t0=t==0)
 			obs, reward, done, _ = env.step(action.cpu().numpy())
 			ep_reward += reward
-			# save_picture(env, env_step, step)
-			if video: video.record(env, step=env_step)
+			if video: video.record(env)
 			t += 1
 		episode_rewards.append(ep_reward)
 		if video: video.save(env_step)
