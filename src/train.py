@@ -1,11 +1,14 @@
 import warnings
+
+
 warnings.filterwarnings('ignore')
 import os
 os.environ['MKL_SERVICE_FORCE_INTEL'] = '1'
-os.environ['MUJOCO_GL'] = 'egl'
+os.environ['MUJOCO_GL'] = 'osmesa'
 import torch
 import numpy as np
 import gym
+from PIL import Image
 gym.logger.set_level(40)
 import time
 import random
@@ -18,6 +21,9 @@ import logger
 torch.backends.cudnn.benchmark = True
 __CONFIG__, __LOGS__ = 'cfgs', 'logs'
 
+def save_picture(env, env_step, step):
+	frame = env.render(mode='rgb_array', height=384, width=384, camera_id=0)
+	Image.fromarray(frame).save(f"media/{env_step}_{step}.png", format='png')
 
 def set_seed(seed):
 	random.seed(seed)
@@ -36,7 +42,8 @@ def evaluate(env, agent, num_episodes, step, env_step, video):
 			action = agent.plan(obs, eval_mode=True, step=step, t0=t==0)
 			obs, reward, done, _ = env.step(action.cpu().numpy())
 			ep_reward += reward
-			if video: video.record(env)
+			save_picture(env, env_step, step)
+			if video: video.record(env, step=env_step)
 			t += 1
 		episode_rewards.append(ep_reward)
 		if video: video.save(env_step)
@@ -45,7 +52,7 @@ def evaluate(env, agent, num_episodes, step, env_step, video):
 
 def train(cfg):
 	"""Training script for TD-MPC. Requires a CUDA-enabled device."""
-	assert torch.cuda.is_available()
+	# assert torch.cuda.is_available()
 	set_seed(cfg.seed)
 	work_dir = Path().cwd() / __LOGS__ / cfg.task / cfg.modality / cfg.exp_name / str(cfg.seed)
 	env, agent, buffer = make_env(cfg), TDMPC(cfg), ReplayBuffer(cfg)

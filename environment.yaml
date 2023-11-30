@@ -6,6 +6,7 @@ dependencies:
   - pytorch=1.9
   - torchvision
   - cudatoolkit=11.1
+  - pillow
   - pip
   - pip:
     - termcolor
@@ -16,3 +17,4 @@ dependencies:
     - wandb
     - moviepy
     - imageio
+    - numpy=1.23.5
