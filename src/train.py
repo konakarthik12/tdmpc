@@ -35,15 +35,15 @@ def evaluate(env, agent, num_episodes, step, env_step, video):
 	episode_rewards = []
 	for i in range(num_episodes):
 		obs, done, ep_reward, t = env.reset(), False, 0, 0
-		if video: video.init(env, enabled=(i==0))
+		if video and i == 0: video.init(env)
 		while not done:
 			action = agent.plan(obs, eval_mode=True, step=step, t0=t==0)
 			obs, reward, done, _ = env.step(action.cpu().numpy())
 			ep_reward += reward
-			if video: video.record(env)
+			if video and i == 0: video.record(env)
 			t += 1
 		episode_rewards.append(ep_reward)
-		if video: video.save(env_step)
+		if video and i == 0: video.save(env_step)
 	return np.nanmean(episode_rewards)
 
 
@@ -53,7 +53,7 @@ def train(cfg):
 	set_seed(cfg.seed)
 	work_dir = Path().cwd() / __LOGS__ / cfg.task / cfg.modality / cfg.exp_name / str(cfg.seed)
 	env, agent, buffer = make_env(cfg), TDMPC(cfg), ReplayBuffer(cfg)
-	
+
 	# Run training
 	L = logger.Logger(work_dir, cfg)
 	episode_idx, start_time = 0, time.time()
