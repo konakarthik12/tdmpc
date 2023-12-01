@@ -68,7 +68,7 @@ class VideoRecorder:
 	def record(self, env):
 		if self.enabled:
 			frame = env.render(mode='rgb_array', height=self.render_size, width=self.render_size, camera_id=0)
-			self._wandb.log({'eval_frame': self._wandb.Image(frame)}, step=env._elapsed_steps)
+			self._wandb.log({'eval_frame': self._wandb.Image(frame)})
 			self.frames.append(frame)
 
 	def save(self, step):
