@@ -1,15 +1,11 @@
 import warnings
-
-
 warnings.filterwarnings('ignore')
 import os
 os.environ['MKL_SERVICE_FORCE_INTEL'] = '1'
-
 assert os.environ['MUJOCO_GL'] in ['osmesa', 'egl', 'glfw']
 import torch
 import numpy as np
 import gym
-from PIL import Image
 gym.logger.set_level(40)
 import time
 import random
@@ -35,21 +31,21 @@ def evaluate(env, agent, num_episodes, step, env_step, video):
 	episode_rewards = []
 	for i in range(num_episodes):
 		obs, done, ep_reward, t = env.reset(), False, 0, 0
-		if video and i == 0: video.init(env)
+		if video: video.init(env, enabled=(i==0))
 		while not done:
 			action = agent.plan(obs, eval_mode=True, step=step, t0=t==0)
 			obs, reward, done, _ = env.step(action.cpu().numpy())
 			ep_reward += reward
-			if video and i == 0: video.record(env)
+			if video: video.record(env)
 			t += 1
 		episode_rewards.append(ep_reward)
-		if video and i == 0: video.save(env_step)
+		if video: video.save(env_step)
 	return np.nanmean(episode_rewards)
 
 
 def train(cfg):
 	"""Training script for TD-MPC. Requires a CUDA-enabled device."""
-	# assert torch.cuda.is_available()
+	assert torch.cuda.is_available()
 	set_seed(cfg.seed)
 	work_dir = Path().cwd() / __LOGS__ / cfg.task / cfg.modality / cfg.exp_name / str(cfg.seed)
 	env, agent, buffer = make_env(cfg), TDMPC(cfg), ReplayBuffer(cfg)
