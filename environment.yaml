@@ -11,12 +11,12 @@ dependencies:
   - setuptools=65.5.0
   - wheel<0.40.0
   - pandas
+  - omegaconf
+  - termcolor
+  - gym==0.21.0
+  - wandb
+  - imageio
+  - moviepy
   - pip
   - pip:
-    - termcolor
-    - omegaconf
-    - gym==0.21.0
     - dm-control==0.0.403778684
-    - wandb
-    - moviepy
-    - imageio
