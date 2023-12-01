@@ -4,7 +4,8 @@ import warnings
 warnings.filterwarnings('ignore')
 import os
 os.environ['MKL_SERVICE_FORCE_INTEL'] = '1'
-os.environ['MUJOCO_GL'] = 'osmesa'
+
+assert os.environ['MUJOCO_GL'] in ['osmesa', 'egl', 'glfw']
 import torch
 import numpy as np
 import gym
