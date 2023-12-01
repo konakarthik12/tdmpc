@@ -95,6 +95,8 @@ def train(cfg):
 
 	L.finish(agent)
 	print('Training completed successfully')
+	if cfg.save_model:
+		agent.save(work_dir / 'agent.pth')
 
 
 if __name__ == '__main__':
